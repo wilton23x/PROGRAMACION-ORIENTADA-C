@@ -1,0 +1,116 @@
+class Personaje:
+    def __init__(self, nombre, fuerza, inteligencia, defensa, vida):
+        self.nombre = nombre
+        self.fuerza = fuerza
+        self.inteligencia = inteligencia
+        self.defensa = defensa
+        self.vida = vida
+
+    def atributos(self):
+        print(f"{self.nombre}:")
+        print(f"· Fuerza: {self.fuerza}")
+        print(f"· Inteligencia: {self.inteligencia}")
+        print(f"· Defensa: {self.defensa}")
+        print(f"· Vida: {self.vida}")
+
+    def subir_nivel(self, fuerza, inteligencia, defensa):
+        self.fuerza += fuerza
+        self.inteligencia += inteligencia
+        self.defensa += defensa
+
+    def esta_vivo(self):
+        return self.vida > 0
+
+    def morir(self):
+        self.vida = 0
+        print(f"{self.nombre} ha muerto.")
+
+    def daño(self, enemigo):
+        return max(self.fuerza - enemigo.defensa, 0)  # El daño no puede ser negativo.
+
+    def atacar(self, enemigo):
+        daño = self.daño(enemigo)
+        enemigo.vida = max(enemigo.vida - daño, 0)  # La vida no puede ser negativa.
+        print(f"{self.nombre} ha realizado {daño} puntos de daño a {enemigo.nombre}.")
+        if enemigo.esta_vivo():
+            print(f"Vida de {enemigo.nombre} es {enemigo.vida}.")
+        else:
+            enemigo.morir()
+
+
+class Guerrero(Personaje):
+    def __init__(self, nombre, fuerza, inteligencia, defensa, vida, espada):
+        super().__init__(nombre, fuerza, inteligencia, defensa, vida)
+        self.espada = espada
+
+    def cambiar_arma(self, tipo_arma):
+        armas = {"Espada Corta": 5, "Espada Larga": 8, "Gran Espada": 10}
+        if tipo_arma in armas:
+            self.espada = armas[tipo_arma]
+            print(f"{self.nombre} ahora usa {tipo_arma} con daño base {self.espada}.")
+        else:
+            print("Arma no válida.")
+
+    def atributos(self):
+        super().atributos()
+        print(f"· Espada: {self.espada}")
+
+    def daño(self, enemigo):
+        return max(self.fuerza + self.espada - enemigo.defensa, 0)
+
+
+class Mago(Personaje):
+    def __init__(self, nombre, fuerza, inteligencia, defensa, vida, nivel_magia):
+        super().__init__(nombre, fuerza, inteligencia, defensa, vida)
+        self.nivel_magia = nivel_magia
+
+    def atributos(self):
+        super().atributos()
+        print(f"· Nivel de Magia: {self.nivel_magia}")
+
+    def daño(self, enemigo):
+        return max(self.inteligencia * self.nivel_magia - enemigo.defensa, 0)
+
+
+class Arquero(Personaje):
+    def __init__(self, nombre, fuerza, inteligencia, defensa, vida, puntería):
+        super().__init__(nombre, fuerza, inteligencia, defensa, vida)
+        self.puntería = puntería
+
+    def atributos(self):
+        super().atributos()
+        print(f"· Puntería: {self.puntería}")
+
+    def daño(self, enemigo):
+        return max(self.fuerza + self.puntería - enemigo.defensa, 0)
+
+
+def combate(jugador_1, jugador_2):
+    turno = 1
+    while jugador_1.esta_vivo() and jugador_2.esta_vivo():
+        print(f"\nTurno {turno}:")
+        print(f"Acción de {jugador_1.nombre}:")
+        jugador_1.atacar(jugador_2)
+        if jugador_2.esta_vivo():
+            print(f"Acción de {jugador_2.nombre}:")
+            jugador_2.atacar(jugador_1)
+        turno += 1
+
+    if jugador_1.esta_vivo():
+        print(f"\n{jugador_1.nombre} ha ganado el combate.")
+    elif jugador_2.esta_vivo():
+        print(f"\n{jugador_2.nombre} ha ganado el combate.")
+    else:
+        print("\nEl combate terminó en empate.")
+
+
+# Ejemplo de uso
+guerrero = Guerrero("Arthas", 15, 5, 10, 100, 7)
+mago = Mago("Merlín", 5, 20, 5, 80, 3)
+arquero = Arquero("Legolas", 10, 8, 7, 90, 5)
+
+guerrero.atributos()
+mago.atributos()
+arquero.atributos()
+
+combate(guerrero, mago)
