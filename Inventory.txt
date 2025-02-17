@@ -1,0 +1,7 @@
+{
+    "Manzana": {"cantidad": 10, "precio": 0.50},
+    "Banana": {"cantidad": 5, "precio": 0.30},
+    "Leche": {"cantidad": 2, "precio": 1.20}
+}
+
+
